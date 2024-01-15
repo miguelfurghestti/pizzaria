@@ -47,6 +47,7 @@ export default function SignUp() {
 
   return (
     <>
+      <title>Sujeito Pizza - Faça seu Cadastro</title>
       <div className={styles.containerCenter}>
         <Image src={logoImg} alt="Logo Sujeito Pizzaria" />
 
