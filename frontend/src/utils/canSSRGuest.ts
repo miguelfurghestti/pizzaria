@@ -1,6 +1,6 @@
 // canSSRGuest.ts
 
-import { parseCookies } from "nookies";
+import { parseCookies } from "cookies";
 
 export async function getData() {
   const res = await fetch("https://api.example.com/...");
