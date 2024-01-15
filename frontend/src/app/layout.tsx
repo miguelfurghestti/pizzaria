@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../styles/globals.scss";
 
 import { AuthProvider } from "../contexts/AuthContext";
@@ -16,7 +18,10 @@ export default function RootLayout({
   return (
     <AuthProvider>
       <html lang="pt-BR">
-        <body>{children}</body>
+        <body>
+          {children}
+          <ToastContainer />
+        </body>
       </html>
     </AuthProvider>
   );

@@ -5,11 +5,14 @@ import { api } from "../services/apiClient";
 import { useRouter } from "next/navigation";
 import { destroyCookie, setCookie } from "nookies";
 
+import { toast } from "react-toastify";
+
 type AuthContextData = {
   user: UserProps | undefined;
   isAuthenticated: boolean;
   signIn: (credentials: SignInProps) => Promise<void>;
   signOut: () => void;
+  signUp: (credentials: SignUpProps) => Promise<void>;
 };
 
 type UserProps = {
@@ -19,6 +22,12 @@ type UserProps = {
 };
 
 type SignInProps = {
+  email: string;
+  password: string;
+};
+
+type SignUpProps = {
+  name: string;
   email: string;
   password: string;
 };
@@ -44,6 +53,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated = !!user;
   const router = useRouter();
 
+  //-- SIGN IN - LOGAR
   async function signIn({ email, password }: SignInProps) {
     try {
       const response = await api.post("/session", {
@@ -69,14 +79,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Redirecionar o user para /dashboard
       //console.log("deucerto");
+      toast.success("Logado com sucesso!");
       router.push("/dashboard");
     } catch (err) {
+      toast.error("Falha ao logar!");
       console.log("ERRO AO ACESSAR ", err);
     }
   }
 
+  //-- SIGN UP - CADASTRAR
+
+  async function signUp({ name, email, password }: SignUpProps) {
+    try {
+      const response = await api.post("/users", {
+        name,
+        email,
+        password,
+      });
+
+      toast.success("Conta criada com sucesso!");
+      router.push("/");
+    } catch (err) {
+      toast.error("Erro ao cadastrar!");
+      // console.log("Erro ao cadastrar ", err);
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, signIn, signOut, signUp }}
+    >
       {children}
     </AuthContext.Provider>
   );
