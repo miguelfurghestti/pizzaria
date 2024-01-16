@@ -1,30 +1,28 @@
-// canSSRGuest.ts
-
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from "next";
 import { parseCookies } from "nookies";
 
-export async function getData() {
-  const res = await fetch("https://api.example.com/...");
+//funcao para paginas que só pode ser acessadas por visitantes
+export function canSSRGuest<P>(fn: GetServerSideProps<P>) {
+  return async (
+    ctx: GetServerSidePropsContext
+  ): Promise<GetServerSidePropsResult<P>> => {
+    const cookies = parseCookies(ctx);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
+    // Se o cara tentar acessar a pagina porem tendo já um login salvo redirecionamos
+    if (cookies["@nextauth.token"]) {
+      return {
+        redirect: {
+          destination: "/dashboard",
+          permanent: false,
+        },
+      };
+    }
 
-  return res.json();
-}
-
-export async function canSSRGuest(context: any) {
-  const cookies = parseCookies(context);
-
-  if (cookies["@nextauth.token"]) {
-    return {
-      redirect: {
-        destination: "/dashboard",
-        permanent: false,
-      },
-    };
-  }
-
-  const data = await getData();
-
-  return data;
+    console.log("teste2");
+    return await fn(ctx);
+  };
 }

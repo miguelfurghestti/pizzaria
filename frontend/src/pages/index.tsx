@@ -1,17 +1,18 @@
-"use client";
-import Image from "next/image";
 import { FormEvent, useContext, useState } from "react";
-import logoImg from "../../public/logo.svg";
+
+import Head from "next/head";
+import Image from "next/image";
 import styles from "../../styles/home.module.scss";
 
-import { Button } from "../../src/components/ui/Button";
-import { Input } from "../../src/components/ui/Input";
+import logoImg from "../../public/logo.svg";
+
+import { toast } from "react-toastify";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 import { AuthContext } from "../contexts/AuthContext";
 
 import Link from "next/link";
-
-import { toast } from "react-toastify";
 
 import { canSSRGuest } from "../utils/canSSRGuest";
 
@@ -27,7 +28,7 @@ export default function Home() {
     event.preventDefault();
 
     if (email === "" || password === "") {
-      toast.warning("Preencha todos os campos.");
+      toast.error("Preencha os campos");
       return;
     }
 
@@ -45,22 +46,23 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>SujeitoPizza - Faça seu login</title>
+      </Head>
       <div className={styles.containerCenter}>
         <Image src={logoImg} alt="Logo Sujeito Pizzaria" />
 
         <div className={styles.login}>
-          <h1>Acesse sua conta</h1>
-
           <form onSubmit={handleLogin}>
             <Input
-              placeholder="Digite seu e-mail"
+              placeholder="Digite seu email"
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
 
             <Input
-              placeholder="Digite sua senha"
+              placeholder="Sua senha"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -71,8 +73,8 @@ export default function Home() {
             </Button>
           </form>
 
-          <Link className={styles.text} href="/signup">
-            Não possui uma conta? <strong>Cadastre-se</strong>
+          <Link legacyBehavior href="/signup">
+            <a className={styles.text}>Nao possui uma conta? Cadastre-se</a>
           </Link>
         </div>
       </div>
@@ -80,17 +82,8 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  const result = await canSSRGuest(context);
-
-  // Se `result` for um objeto de redirecionamento, aplique o redirecionamento
-  if ("redirect" in result) {
-    return result;
-  }
-
+export const getServerSideProps = canSSRGuest(async (ctx) => {
   return {
-    props: {
-      data: result,
-    },
+    props: {},
   };
-}
+});
