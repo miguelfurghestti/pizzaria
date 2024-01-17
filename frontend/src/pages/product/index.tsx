@@ -17,6 +17,10 @@ interface CategoryProps {
 
 export default function Product({ categoryList }: CategoryProps) {
   //console.log(categoryList);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+
   const [avatarUrl, setAvatarUrl] = useState("");
   const [imageAvatar, setImageAvatar] = useState(null);
 
